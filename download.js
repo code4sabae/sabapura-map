@@ -1,6 +1,8 @@
 import { CSV } from "https://js.sabae.cc/CSV.js";
+import { getDate } from "https://js.sabae.cc/getDate.js";
 
-const url = "https://sabapura.com/_next/data/eGqFCze-hIGd-7hkNlK9g/index.json";
+//const url = "https://sabapura.com/_next/data/eGqFCze-hIGd-7hkNlK9g/index.json";
+const url = "https://sabapura.com/_next/data/nCAj9Fcx8CeAStkmiS5AL/index.json";
 //const data = await (await fetch(url)).text();
 //await Deno.writeTextFile("index.json", data);
 const data = JSON.parse(await Deno.readTextFile("index.json"));
@@ -34,5 +36,17 @@ for (const d of data.pageProps.events) {
     };
     list.push(d2);
 }
-await Deno.writeTextFile("list.csv", CSV.encode(CSV.fromJSON(list)));
+const fn = "data/latest.csv";
+const sold = CSV.stringify(CSV.parse(await Deno.readTextFile(fn)));
+const snew = CSV.stringify(list);
+if (sold != snew) {
+    await Deno.writeTextFile(fn, snew);
+    await Deno.writeTextFile("data/" + getDate() + ".csv", snew);
+    /*
+    console.log(snew.length, snew.substring(0, 10))
+    console.log(sold.length, sold.substring(0, 10))
+    */
+} else {
+    console.log("not changed");
+}
 
