@@ -1,11 +1,34 @@
 import { CSV } from "https://js.sabae.cc/CSV.js";
 import { getDate } from "https://js.sabae.cc/getDate.js";
+import { HTMLParser } from "https://js.sabae.cc/HTMLParser.js";
+
+const getId = async () => {
+    const url = "https://sabapura.com";
+    const html = await (await fetch(url)).text();
+    //await Deno.writeTextFile("html/index.html", html);
+    //const html = await Deno.readTextFile("html/index.html");
+    //console.log(html);
+    
+    const root = HTMLParser.parse(html);
+    const scripts = root.querySelectorAll("script");
+    for (const scr of scripts) {
+        const url = scr.attributes.src;
+        if (url && url.startsWith("/_next/static/") && !url.startsWith("/_next/static/chunks/")) {
+            return url.split("/")[3];
+        }
+        //console.log(url);
+    }
+    return null;
+};
+const id = await getId();
+console.log(id);
 
 //const url = "https://sabapura.com/_next/data/eGqFCze-hIGd-7hkNlK9g/index.json";
-const url = "https://sabapura.com/_next/data/nCAj9Fcx8CeAStkmiS5AL/index.json";
-//const data = await (await fetch(url)).text();
-//await Deno.writeTextFile("index.json", data);
-const data = JSON.parse(await Deno.readTextFile("index.json"));
+//const url = "https://sabapura.com/_next/data/nCAj9Fcx8CeAStkmiS5AL/index.json";
+const url = "https://sabapura.com/_next/data/" + id + "/index.json";
+const data = await (await fetch(url)).json();
+//await Deno.writeTextFile("index.json", JSON.stringyfi(data));
+//const data = JSON.parse(await Deno.readTextFile("index.json"));
 //console.log(data.pageProps.events);
 const list = [];
 for (const d of data.pageProps.events) {
@@ -49,4 +72,3 @@ if (sold != snew) {
 } else {
     console.log("not changed");
 }
-

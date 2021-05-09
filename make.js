@@ -6,7 +6,7 @@ for (const d of data) {
     const pos = geo3x3.find(s => s.name_shop == d.name_shop);
     console.log(pos);
     if (!pos) {
-        throw new Error("not found Geo3x3 in geo3x3.csv!!");
+        throw new Error("not found Geo3x3 in geo3x3.csv!! " + d.name_shop);
     }
     d.geo3x3 = pos.geo3x3;
 }
