@@ -56,6 +56,7 @@ for (const d of data.pageProps.events) {
         updatedAt: d.updatedAt,
         createdAt: d.createdAt,
         revisedAt: d.revisedAt,
+        geo3x3: d.lng_lat,
     };
     list.push(d2);
 }
