@@ -1,6 +1,6 @@
 # sabapura-map
 
-[さばぷら](https://sabapura.com/)ノオープンデータを使ったマップアプリづくり
+[さばぷら](https://sabapura.com/)のオープンデータを使ったマップアプリづくり
 
 ## application
 
