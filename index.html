@@ -1,21 +1,41 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>さばぷらマップ</title>
-    <script type="module" src="https://taisukef.github.io/s/module.js"></script>
-  </head>
-  <body>
-    <script type="text/yaml">
-      accessToken: pk.eyJ1IjoidGFpc3VrZWYiLCJhIjoiY2tueDN5a3JxMGdkaTJvbjRncWt1MDhiYiJ9.j_BtkymGTluTHkMVPHa8Hw
-      title: さばぷらマップ
-      style: https://optgeo.github.io/b3p/style.json
-      chapters: https://code4sabae.github.io/sabapura-map/events.csv
-      footer: >-
-        <p>さばえをぷらっと、いつもにプラス「<a href=https://sabapura.com/>さばぷら</a>」 by <a href=https://github.com/code4sabae/sabapura-map/>Code for Sabae</a></p>
-        <p>DATA: CC BY <a href=https://sabapura.com/>さばぷら</a></p>
-        <p><a href='https://github.com/optgeo'>Adopt Geodata プロジェクト</a> を活用しています。</p>
-    </script>
-  </body>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>さばぷらマップ</title>
+</head>
+<body>
+<script type="module">
+import { showMap, createChapters } from "https://taisukef.github.io/s/system.js";
+
+const accessToken = "pk.eyJ1IjoiZ2VvcmVwdWJsaWMiLCJhIjoiY2tvMm53aWsxMTFiajJycGdyOXR4MW9iMiJ9.h7aSUinQuXd8EFRSWJvBPQ";
+
+const footer = `<p>さばえをぷらっと、いつもにプラス「<a href=https://sabapura.com/>さばぷら</a>」 by <a href=https://github.com/code4sabae/sabapura-map/>Code for Sabae</a></p>
+<p>DATA: CC BY <a href=https://sabapura.com/data.json>さばぷら data.json</a></p>
+<p><a href='https://github.com/optgeo'>Adopt Geodata プロジェクト</a> を活用しています。</p>`
+
+onload = async () => {
+  //const url = "data.json";
+  const url = "https://sabapura.com/data.json";
+  const data = await (await fetch(url)).json();
+  const config = {
+    title: "さばぷらマップ",
+    accessToken,
+    style: "https://optgeo.github.io/b3p/style.json",
+    footer,
+    theme: "light",
+  };
+  let idx = 0;
+  const data2 = data.map((d) => {
+    const res = {
+      title: d.name,
+      image: d.top.topImage.url,
+      description: (d.text || "") + (d.shop_name && d.name != d.shop_name ? "<br>" + d.shop_name : "") + "<br><a href=https://sabapura.com/event/" + d.id + ">さばぷらサイトへ</a>",
+      geo3x3: d.geo3x3,
+      bearing: idx++ * 30,
+    };
+    return res;
+  });
+  config.chapters = createChapters(data2, 18);
+  showMap(config);
+};
+</script>
+</body>
 </html>
